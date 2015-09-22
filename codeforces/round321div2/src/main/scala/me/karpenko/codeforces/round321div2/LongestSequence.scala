@@ -10,7 +10,7 @@ object LongestSequence {
 
     def findLongestSequence(passedLength: Int, lengthOfTheLongestSeq: Int, currentValue: Int, values: Seq[Int]): Int = {
       val lengthOfCurrentSeq = passedLength + 1
-      val updatedLongestLength = if (lengthOfCurrentSeq > lengthOfTheLongestSeq) lengthOfCurrentSeq else lengthOfTheLongestSeq
+      val updatedLongestLength = lengthOfCurrentSeq max lengthOfTheLongestSeq
 
       values.headOption.fold(getTheLongestSequence(lengthOfCurrentSeq, lengthOfTheLongestSeq)){ nextValue =>
         val updatedCurrentSeq = if (nextValue >= currentValue) lengthOfCurrentSeq else 0
