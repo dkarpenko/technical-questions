@@ -3,6 +3,13 @@ package me.karpenko.codeforces.round321div2
 
 object LongestSequence {
 
+  val in = io.Source.stdin.getLines()
+
+  @inline def tokenizeLine = new java.util.StringTokenizer(in.next())
+  def readInts(n: Int) = { val stringTokenizer = tokenizeLine; Array.fill(n)(stringTokenizer.nextToken.toInt) }
+  def readLongs(n: Int) = { val stringTokenizer = tokenizeLine; Array.fill(n)(stringTokenizer.nextToken.toLong) }
+  def readBigs(n: Int) = { val stringTokenizer = tokenizeLine; Array.fill(n)(BigInt(stringTokenizer.nextToken)) }
+
   def findTheLongestSequenceLength(values: Seq[Int]) = {
     
     def getTheLongestSequence(lengthOfCurrentSeq: Int, lengthOfTheLongestSeq: Int) =
@@ -23,10 +30,11 @@ object LongestSequence {
   }
 
   def main(args: Array[String]) {
-    val in = io.Source.stdin.getLines()
-    in.next().toInt
 
-    val moneyPerDay = in.next().toString.split(" ").map(_.toInt)
+    val Array(numberOfElements) = readInts(1)
+
+    val moneyPerDay = readInts(numberOfElements)
+
 
     val growingPeriod = findTheLongestSequenceLength(moneyPerDay)
 
