@@ -1,6 +1,5 @@
 resolvers ++= Seq(
   "gseitz@github" at "http://gseitz.github.com/maven/",
-  "Adform Nexus" at "http://maven.adform.com/nexus/content/groups/public"
 )
 
 resolvers += Resolver.sonatypeRepo("releases")
