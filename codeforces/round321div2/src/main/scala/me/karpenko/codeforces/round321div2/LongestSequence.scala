@@ -11,7 +11,7 @@ object LongestSequence {
   def readBigs(n: Int) = { val stringTokenizer = tokenizeLine; Array.fill(n)(BigInt(stringTokenizer.nextToken)) }
 
   def findTheLongestSequenceLength(values: Seq[Int]) = {
-    
+
     def getTheLongestSequence(lengthOfCurrentSeq: Int, lengthOfTheLongestSeq: Int) =
       if (lengthOfCurrentSeq > lengthOfTheLongestSeq) lengthOfCurrentSeq else lengthOfTheLongestSeq
 
