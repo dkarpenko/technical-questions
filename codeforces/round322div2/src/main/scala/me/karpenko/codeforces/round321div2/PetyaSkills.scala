@@ -16,29 +16,48 @@ object PetyaSkills {
 
   def floorSum(x: Int, res: Int) = res + x / 10
 
-  def calculateRank(skills: Seq[Int]) = skills.foldRight(0)(floorSum)
+  def calculateRank(accumulator: Accumulator) = accumulator.skills.foldRight(0)(floorSum)
 
-  case class Accumulator(skills: Seq[Int], availablePoints: Int)
+  case class Accumulator(skills: Seq[Int], points: Int)
 
   def solve(accumulator: Accumulator): Int = {
-    val skills = distributeSkills(accumulator).skills
+    def validForProcessing: Boolean = accumulator.skills.isEmpty || accumulator.points == 0
+    val skills = if (validForProcessing) accumulator else improveSkills(accumulator)
     calculateRank(skills)
   }
 
 
-  def distributeSkills(accumulator: Accumulator): Accumulator = {
+  def improveSkills(accumulator: Accumulator): Accumulator = {
 
-    accumulator.skills.foldRight(Accumulator(Seq.empty, accumulator.availablePoints)) { (currentElement, result) =>
-      val gap = needTo10(currentElement)
-      if (result.availablePoints < gap || currentElement == 100) {
-        val skillsWithUnchangedCurrentElement = result.skills.+:(currentElement)
-        Accumulator(skillsWithUnchangedCurrentElement, result.availablePoints)
+    def canNotBeIncreased(currentElement: Int, availablePoints: Int, gap: Int): Boolean = 
+      availablePoints < gap || currentElement == 100
+    
+    def canImproveSkills(profile: Accumulator) = profile.skills.head < 100 && profile.points >= needTo10(profile.skills.head)
+
+    val sortedSkills = accumulator.skills.sortBy(x => ((x % 10, x)))
+
+    val updatedProfile = sortedSkills
+      .foldRight(accumulator.copy(skills = Seq.empty)) { (currentSkill, profile) =>
+      
+      val gap = needTo10(currentSkill)
+      if (canNotBeIncreased(currentSkill, profile.points, gap)) {
+        val skillsWithUnchangedCurrentElement = profile.skills.+:(currentSkill)
+        Accumulator(skillsWithUnchangedCurrentElement, profile.points)
       } else {
-        val updatedSkills = result.skills.+:(currentElement + gap)
-        val availablePoints = result.availablePoints - gap
+        val updatedSkills = profile.skills.+:(currentSkill + gap)
+        val availablePoints = profile.points - gap
+        
         Accumulator(updatedSkills, availablePoints)
       }
     }
+
+    
+    if (canImproveSkills(updatedProfile)) {
+      improveSkills(updatedProfile.copy(skills = updatedProfile.skills))
+    } else {
+      updatedProfile
+    }
+
   }
 
   def needTo10(element: Int): Int = {
@@ -48,7 +67,8 @@ object PetyaSkills {
   def main(args: Array[String]) {
 
     val Array(numberOfSkills, availablePoints) = readInts(2)
-    val currentSkills = readInts(numberOfSkills).sortBy(needTo10)
+
+    val currentSkills = readInts(numberOfSkills)
 
     println(solve(Accumulator(currentSkills, availablePoints)))
   }
